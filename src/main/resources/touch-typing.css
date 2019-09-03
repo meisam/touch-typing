@@ -1,0 +1,36 @@
+* {
+    font-size: 1.25em;
+    font-family: monaco,monospace;
+    text-align: center;
+}
+
+textarea {
+    text-align: left;
+}
+
+div {
+    border-width: 2px;
+    border-style: solid;
+    border-color: White;
+    padding: 2px;
+    display: inline-block;
+    min-width: 0.5em;
+    min-height: 1em;
+}
+
+div.correct {
+    background-color: LightGreen;
+}
+
+div.incorrect {
+    background-color: Tomato;
+}
+
+div.untyped {
+    background-color: White;
+}
+
+div.extra {
+    background-color: LightBlue;
+}
+
