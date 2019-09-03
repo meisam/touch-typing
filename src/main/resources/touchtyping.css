@@ -1,0 +1,27 @@
+* {
+    font-size: 1.25em;
+    font-family: monaco,Consolas,Lucida Console,monospace;
+}
+
+div {
+    padding: 2px;
+    display: inline-block;
+    min-width: 0.5em;
+}
+
+div.correct {
+    background-color: #00FF00;
+}
+
+div.incorrect {
+    background-color: #FF0000;
+}
+
+div.untyped {
+    background-color: #FFFFFF;
+}
+
+div.extra {
+    background-color: #FF00FF;
+}
+
