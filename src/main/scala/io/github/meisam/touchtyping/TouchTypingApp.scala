@@ -1,18 +1,18 @@
 package io.github.meisam.touchtyping
 
 import org.scalajs.dom
-import org.scalajs.dom.{Event, document}
-import org.scalajs.dom.html.{Div, Input}
-import org.scalajs.dom.raw.{Element, HTMLDivElement, HTMLElement}
+import org.scalajs.dom.document
+import org.scalajs.dom.html.Div
+import org.scalajs.dom.raw.HTMLDivElement
 import scalatags.JsDom.all._
 
 import scala.scalajs.js.annotation.JSExportTopLevel
 
-object TutorialApp extends {
+object TouchTypingApp {
 
   private val EOF = 0.toChar
 
-  private val box = textarea(
+  private val practiceArea = textarea(
     `type` := "text",
     rows := 10,
     cols := 50,
@@ -20,7 +20,7 @@ object TutorialApp extends {
     placeholder := "Type here!",
   ).render
 
-  private val box2 = textarea(
+  private val practiceSource = textarea(
     `type` := "text",
     rows := 10,
     cols := 50,
@@ -32,50 +32,48 @@ object TutorialApp extends {
   private val wordsDiv: Div = div(name := "wordsDiv")().render
 
   private def remakeCharBoxes(): Unit = {
+    practiceArea.value = ""
     val count = wordsDiv.childElementCount
-      println(s"count = $count")
-    (count - 1 to 0 by -1).foreach{ i =>
+    (count - 1 to 0 by -1).foreach { i =>
       val child = wordsDiv.children(i)
-      println(s"removed $child")
       wordsDiv.removeChild(child)
-      println(s"removed $child")
     }
-    charBoxes(box2.value, box.value).foreach { child =>
+    charBoxes(practiceSource.value, practiceArea.value).foreach { child =>
       wordsDiv.appendChild(child.render)
     }
   }
 
   def main(args: Array[String]): Unit = {
 
-    box.addEventListener("input", { e: dom.Event => checkTyping(e) })
-    box2.addEventListener("input", { _: dom.Event => remakeCharBoxes() })
+    practiceArea.addEventListener("input", { _: dom.Event => checkTyping() })
+    practiceSource.addEventListener("input", { _: dom.Event => remakeCharBoxes() })
     val css = link(
-      href := "touchtyping.css",
+      href := "touch-typing.css",
       `type` := "text/css",
-      rel :=  "stylesheet"
+      rel := "stylesheet"
     ).render
 
     remakeCharBoxes()
     document.head.appendChild(css)
-    document.body.appendChild(box2)
+    document.body.appendChild(practiceSource)
     document.body.appendChild(hr().render)
     document.body.appendChild(wordsDiv)
     document.body.appendChild(hr().render)
-    document.body.appendChild(box)
+    document.body.appendChild(practiceArea)
 
   }
 
   private def charBoxes(sentence: String, userInput: String) = {
     sentence.toCharArray.map { sentenceChar =>
-        div(cls := "untyped")(sentenceChar.toString())
+      div(cls := "untyped")(sentenceChar.toString())
     }
   }
 
   @JSExportTopLevel("checkTyping")
-  private def checkTyping(e: Event): Unit = {
+  protected def checkTyping(): Unit = {
     val charDivs = wordsDiv.children
 
-    box2.value.zipAll(box.value, EOF, EOF).take(box2.value.length).zipWithIndex.foreach {
+    practiceSource.value.zipAll(practiceArea.value, EOF, EOF).take(practiceSource.value.length).zipWithIndex.foreach {
       case ((_, `EOF`), i) =>
         charDivs(i).setAttribute("class", "untyped")
       case ((`EOF`, _), i) =>
@@ -85,7 +83,5 @@ object TutorialApp extends {
       case ((_, _), i) =>
         charDivs(i).asInstanceOf[HTMLDivElement].setAttribute("class", "correct")
     }
-
-    println(s"U: $e, ${e.`type`}, $box,${box.value + box.value} $wordsDiv")
   }
 }
